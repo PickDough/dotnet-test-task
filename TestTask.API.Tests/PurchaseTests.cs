@@ -52,8 +52,11 @@ public class PurchaseTests : BaseTest
         var initialUserItemCount = await Context.DbContext.UserItems.CountAsync();
 
         // Act
-        var tasks = Enumerable.Range(0, 5).Select(_ =>
-            Rait<MarketController>().Call(controller => controller.BuyAsync(user.Id, item.Id))
+        var tasks = Enumerable.Range(0, 5).Select(async _ =>
+            {
+                var r = await Rait<MarketController>().CallH(controller => controller.BuyAsync(user.Id, item.Id));
+                Console.WriteLine(r.StatusCode + " " + r.Content.ReadAsStringAsync().Result);
+            }
         );
 
         await Task.WhenAll(tasks);

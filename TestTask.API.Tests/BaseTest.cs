@@ -9,6 +9,8 @@ using ServiceCollectionExtensions = RAIT.Core.ServiceCollectionExtensions;
 
 namespace TestTask.API.Tests;
 
+using Microsoft.EntityFrameworkCore;
+
 public class BaseTest
 {
     protected RaitHttpClientWrapper<T> Rait<T>() where T : ControllerBase
@@ -23,7 +25,7 @@ public class BaseTest
         application.Services.ConfigureRait();
         Context.Client = application.CreateDefaultClient();
         Context.Services = application.Services;
-        Context.DbContext = application.Services.GetRequiredService<TestDbContext>();
+        Context.DbContext = await application.Services.GetRequiredService<IDbContextFactory<TestDbContext>>().CreateDbContextAsync();
 
         await SetupBase();
     }

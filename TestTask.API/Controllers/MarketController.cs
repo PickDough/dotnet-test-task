@@ -3,8 +3,7 @@ using TestTask.Services;
 
 namespace TestTask.API.Controllers;
 
-[ApiController]
-[Route("[controller]")]
+[ApiController,Route("[controller]")]
 public class MarketController : ControllerBase
 {
     private readonly MarketService _marketService;
@@ -15,8 +14,17 @@ public class MarketController : ControllerBase
     }
 
     [HttpPost]
-    public async Task BuyAsync(int userId, int itemId)
+    public async Task<IActionResult> BuyAsync(int userId, int itemId)
     {
-        await _marketService.BuyAsync(userId, itemId);
+        try
+        {
+            await _marketService.BuyAsync(userId, itemId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+      
     }
 }
